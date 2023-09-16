@@ -1,9 +1,10 @@
 const {Router} = require('express');
 const { author, version } = require('../../package.json');
+const {authenticate} = require('../auth');
 
 const router = Router();
 
-router.use('/v1', require('./api'));
+router.use('/v1', authenticate(), require('./api'));
 
 
 // Define a simple health check route. If the server is running
