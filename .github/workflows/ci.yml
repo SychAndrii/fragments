@@ -7,10 +7,10 @@ name: ci
 on:
   pull_request:
     branches:
-      - main
+      - lab3
   push:
     branches:
-      - main
+      - lab3
 
 jobs:
   lint:
