@@ -65,6 +65,7 @@ app.use((err, req, res, next) => {
     },
   });
 });
+const unneededVariable = 'This variable is never used';
 
 // Export our `app` so we can access it in server.js
 module.exports = app;
