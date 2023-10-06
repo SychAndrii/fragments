@@ -5,7 +5,7 @@
   "description": "Cloud computing course labs.",
   "scripts": {
     "test": "jest -c jest.config.js --runInBand --",
-    "test:watch": "jest -c jest.config.js --runInBand --watch --",
+    "test:watch": "jest -c jest.config.js --runInBand --watch --detectOpenHandles --",
     "coverage": "jest -c jest.config.js --runInBand --coverage",
     "lint": "eslint --config .eslintrc.js \"./src/**/*.js\" \"tests/**/*.js\"",
     "start": "node src/index.js",
