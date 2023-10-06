@@ -20,7 +20,7 @@ const rawBody = () =>
 const router = express.Router();
 
 // Define our first route, which will be: GET /v1/fragments
-router.get('/fragments', require('./get'));
+router.get('/fragments', rawBody(), require('./get'));
 
 // Use a raw body parser for POST, which will give a `Buffer` Object or `{}` at `req.body`
 // You can use Buffer.isBuffer(req.body) to test if it was parsed by the raw body parser.
