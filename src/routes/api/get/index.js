@@ -1,5 +1,5 @@
-const { Fragment } = require('../../model/fragment');
-const { createSuccessResponse } = require('../../response');
+const { Fragment } = require('../../../model/fragment');
+const { createSuccessResponse } = require('../../../response');
 
 /**
  * Get a list of fragments for the current user
