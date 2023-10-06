@@ -20,7 +20,7 @@ const rawBody = () =>
 const router = express.Router();
 
 router.get('/fragments', require('./get'));
-router.get('/fragments/:id', require('./get/:id'));
+router.get('/fragments/:id', require('./get/id'));
 router.post('/fragments', rawBody(), require('./post'));
 
 // Other routes will go here later on...
