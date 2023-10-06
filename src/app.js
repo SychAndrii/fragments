@@ -14,7 +14,6 @@ const { createErrorResponse } = require('./response');
 
 // Create an express app instance we can use to attach middleware and HTTP routes
 const app = express();
-
 // Set up our passport authentication middleware
 passport.use(authenticate.strategy());
 app.use(passport.initialize());
