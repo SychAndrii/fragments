@@ -76,7 +76,33 @@ describe('POST route', () => {
     });
   });
 
-  describe('Response', () => {
+  describe('Response location header', () => {
+    test('Successful request returns location header with fragment id in path', async () => {
+      const res = await request(app)
+        .post('/v1/fragments')
+        .send('This is a fragment')
+        .set('Content-Type', 'text/plain')
+        .auth('user1@email.com', 'password1');
+
+      const fragmentId = res.body.fragment.id;
+      expect(res.headers.location.endsWith(`/${fragmentId}`)).toBe(true);
+    });
+
+    test('Successful request returns location header of correct structure', async () => {
+      const res = await request(app)
+        .post('/v1/fragments')
+        .send('This is a fragment')
+        .set('Content-Type', 'text/plain')
+        .auth('user1@email.com', 'password1');
+
+      // Construct a regex pattern to match the URL structure
+      const pattern = new RegExp('^https?://[^/]+:[0-9]+/[a-zA-Z0-9-]+$');
+
+      expect(pattern.test(res.headers.location)).toBe(true);
+    });
+  });
+
+  describe('Response status code', () => {
     test('Unsuccessful request returns 415 status code', async () => {
       const res = await request(app)
         .post('/v1/fragments')
@@ -86,7 +112,18 @@ describe('POST route', () => {
       expect(res.statusCode).toBe(415);
     });
 
-    test('Unsuccessful request returns error status and error object', async () => {
+    test('Successful request returns 201 status code', async () => {
+      const res = await request(app)
+        .post('/v1/fragments')
+        .send('This is a fragment')
+        .set('Content-Type', 'text/plain')
+        .auth('user1@email.com', 'password1');
+      expect(res.statusCode).toBe(201);
+    });
+  });
+
+  describe('Response body', () => {
+    test('Unsuccessful request returns error status and error object of correct structure', async () => {
       const res = await request(app)
         .post('/v1/fragments')
         .send('This is a fragment')
