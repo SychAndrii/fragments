@@ -3,15 +3,17 @@ const app = require('../../src/app');
 
 describe('POST route', () => {
   describe('Log-in credentials', () => {
-    test('Does not allow access for unauthenticated users', () => {
-      request(app).post('/v1/fragments').expect(401);
+    test('Does not allow access for unauthenticated users', async () => {
+      const res = await request(app).post('/v1/fragments');
+      expect(res.statusCode).toBe(401);
     });
 
-    test('Incorrect credentials are denied', () =>
-      request(app)
+    test('Incorrect credentials are denied', async () => {
+      const res = await request(app)
         .post('/v1/fragments')
-        .auth('invalid@email.com', 'incorrect_password')
-        .expect(401));
+        .auth('invalid@email.com', 'incorrect_password');
+      expect(res.statusCode).toBe(401);
+    });
 
     test('Authorized users are able to create new fragment successfully', async () => {
       const res = await request(app)
