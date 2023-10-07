@@ -8,6 +8,7 @@ const logger = require('../../../logger');
 module.exports = async (req, res) => {
   logger.debug(
     {
+      expand: req.query.expand,
       user: req.user,
     },
     'Received /GET request.'

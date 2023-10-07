@@ -1,5 +1,6 @@
 const logger = require('../../../logger');
 const { Fragment } = require('../../../model/fragment');
+const { createErrorResponse } = require('../../../response');
 
 /**
  * Get a fragment by id for current user
@@ -28,5 +29,6 @@ module.exports = async (req, res) => {
       },
       'Unable to send fragment body!'
     );
+    res.status(404).json(createErrorResponse(404, 'Unable to send fragment body!'));
   }
 };
