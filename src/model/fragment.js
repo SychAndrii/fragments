@@ -13,7 +13,6 @@ const {
   listFragments,
   deleteFragment,
 } = require('./data');
-const logger = require('../logger');
 
 class Fragment {
   static validTypes = [
@@ -37,7 +36,8 @@ class Fragment {
     }
 
     if (!Fragment.isSupportedType(type)) {
-      throw new Error(`Invalid data type: ${type}!`);
+      const err = new Error(`Invalid data type: ${type}!`);
+      throw err;
     }
 
     if (typeof size !== 'number' || isNaN(size)) {
@@ -168,12 +168,6 @@ class Fragment {
       const parsedContentType = contentType.parse(value);
       return this.validTypes.includes(parsedContentType.type);
     } catch (error) {
-      logger.error(
-        {
-          error,
-        },
-        'Content type not supported!'
-      );
       return false;
     }
   }

@@ -14,13 +14,10 @@ const rawBody = () =>
     },
   });
 
-// Create a router on which to mount our API endpoints
 const router = express.Router();
 
 router.get('/fragments', require('./get'));
 router.get('/fragments/:id', require('./get/id'));
 router.post('/fragments', rawBody(), require('./post'));
-
-// Other routes will go here later on...
 
 module.exports = router;

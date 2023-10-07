@@ -2,10 +2,17 @@ const logger = require('../../../logger');
 const { Fragment } = require('../../../model/fragment');
 
 /**
- * Get a list of fragments for the current user
+ * Get a fragment by id for current user
  */
 module.exports = async (req, res) => {
   const { id } = req.params;
+  logger.debug(
+    {
+      id,
+      user: req.user,
+    },
+    'Received /GET/:id request.'
+  );
   try {
     const fragment = await Fragment.byId(req.user, id);
     const fragmentBody = await fragment.getData();

@@ -1,13 +1,23 @@
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
+const logger = require('../../logger');
 
 const apiURL = process.env.API_URL;
 
 /**
- * Get a list of fragments for the current user
+ * Create a fragment for current user.
  */
 module.exports = async (req, res) => {
   const type = req.get('Content-Type');
+
+  logger.debug(
+    {
+      buffer: req.body,
+      type,
+      user: req.user,
+    },
+    'Received /POST request'
+  );
 
   if (Fragment.isSupportedType(type) && Buffer.isBuffer(req.body)) {
     const f = new Fragment({
@@ -34,6 +44,7 @@ module.exports = async (req, res) => {
       })
     );
   } else {
+    logger.warn({}, 'Unable to create a fragment!');
     res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
   }
 };
