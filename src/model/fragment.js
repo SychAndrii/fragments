@@ -13,21 +13,18 @@ const {
   listFragments,
   deleteFragment,
 } = require('./data');
+const logger = require('../logger');
 
 class Fragment {
   static validTypes = [
     `text/plain`,
-    /*
-         Currently, only text/plain is supported. Others will be added later.
-      
-        `text/markdown`,
-        `text/html`,
-        `application/json`,
-        `image/png`,
-        `image/jpeg`,
-        `image/webp`,
-        `image/gif`,
-        */
+    `text/markdown`,
+    `text/html`,
+    `application/json`,
+    `image/png`,
+    `image/jpeg`,
+    `image/webp`,
+    `image/gif`,
   ];
 
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
@@ -167,8 +164,18 @@ class Fragment {
    * @returns {boolean} true if we support this Content-Type (i.e., type/subtype)
    */
   static isSupportedType(value) {
-    const parsedContentType = contentType.parse(value);
-    return this.validTypes.includes(parsedContentType.type);
+    try {
+      const parsedContentType = contentType.parse(value);
+      return this.validTypes.includes(parsedContentType.type);
+    } catch (error) {
+      logger.error(
+        {
+          error,
+        },
+        'Content type not supported!'
+      );
+      return false;
+    }
   }
 }
 

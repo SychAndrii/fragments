@@ -34,10 +34,6 @@ module.exports = async (req, res) => {
       })
     );
   } else {
-    res.status(415).json(
-      createErrorResponse({
-        fragments: 'Unsupported Data Type!',
-      })
-    );
+    res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
   }
 };
