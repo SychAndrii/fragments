@@ -106,7 +106,9 @@ class Fragment {
    */
   async save() {
     this.updated = new Date();
+    console.log(this.updated);
     await writeFragment(this);
+    console.log(this.updated);
   }
 
   /**
@@ -126,8 +128,8 @@ class Fragment {
     if (!Buffer.isBuffer(data)) {
       throw new TypeError('Expected data to be of type Buffer');
     }
-    this.updated = new Date();
     this.size = data.length;
+    await this.save();
     await writeFragmentData(this.ownerId, this.id, data);
   }
 

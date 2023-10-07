@@ -2,7 +2,7 @@ const { Fragment } = require('../../src/model/fragment');
 
 // Wait for a certain number of ms. Feel free to change this value
 // if it isn't long enough for your test runs. Returns a Promise.
-const wait = async (ms = 300) => new Promise((resolve) => setTimeout(resolve, ms));
+const wait = async (ms = 500) => new Promise((resolve) => setTimeout(resolve, ms));
 const validTypes = [
   `text/plain`,
   `text/markdown`,
@@ -187,6 +187,7 @@ describe('Fragment class', () => {
       const modified1 = fragment.updated;
       await wait(1000);
       await fragment.save();
+      await wait();
       const fragment2 = await Fragment.byId(ownerId, fragment.id);
       expect(Date.parse(fragment2.updated)).toBeGreaterThan(Date.parse(modified1));
     });
@@ -236,8 +237,7 @@ describe('Fragment class', () => {
       expect(fragment.size).toBe(1);
 
       await fragment.setData(Buffer.from('aa'));
-      const res = await Fragment.byId('1234', fragment.id);
-      console.log(res);
+      await Fragment.byId('1234', fragment.id);
       const { size } = await Fragment.byId('1234', fragment.id);
       expect(size).toBe(2);
     });
