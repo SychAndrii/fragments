@@ -53,11 +53,11 @@ class Fragment {
     }
 
     if (!created) {
-      created = new Date();
+      created = new Date().toISOString();
     }
 
     if (!updated) {
-      updated = new Date();
+      updated = new Date().toISOString();
     }
 
     this.id = id;
@@ -105,10 +105,8 @@ class Fragment {
    * @returns Promise<void>
    */
   async save() {
-    this.updated = new Date();
-    console.log(this.updated);
+    this.updated = new Date().toISOString();
     await writeFragment(this);
-    console.log(this.updated);
   }
 
   /**
@@ -129,8 +127,8 @@ class Fragment {
       throw new TypeError('Expected data to be of type Buffer');
     }
     this.size = data.length;
-    await this.save();
     await writeFragmentData(this.ownerId, this.id, data);
+    await this.save();
   }
 
   /**

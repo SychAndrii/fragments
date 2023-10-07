@@ -1,3 +1,4 @@
+const logger = require('../../../logger');
 const { Fragment } = require('../../../model/fragment');
 
 /**
@@ -14,6 +15,11 @@ module.exports = async (req, res) => {
 
     return res.status(200).send(fragmentBody);
   } catch (error) {
-    console.log(error.message);
+    logger.error(
+      {
+        error,
+      },
+      'Unable to send fragment body!'
+    );
   }
 };

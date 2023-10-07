@@ -187,7 +187,7 @@ describe('Fragment class', () => {
       const modified1 = fragment.updated;
       await wait(1000);
       await fragment.save();
-      await wait();
+      await wait(1000);
       const fragment2 = await Fragment.byId(ownerId, fragment.id);
       expect(Date.parse(fragment2.updated)).toBeGreaterThan(Date.parse(modified1));
     });
