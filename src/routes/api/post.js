@@ -25,6 +25,14 @@ module.exports = async (req, res) => {
       type,
     });
 
+    logger.debug(
+      {
+        data: req.body,
+        length: req.body.length,
+      },
+      'Saving fragment data to the database...'
+    );
+
     await f.setData(req.body);
     await f.save();
 
