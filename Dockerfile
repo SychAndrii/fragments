@@ -1,40 +1,51 @@
-# This file defines a set of instructions for Docker Engine to create a Docker Image
+### Stage 0: Installing dependencies
 
-# Base our image on node image: https://hub.docker.com/_/node/
-FROM node:16.17.0
+FROM node:lts-alpine3.17@sha256:b45e71e98bd0eecd4b694c7fb0281e08e06a384de26a986d241d348926692318 AS dependencies
 
 #Metadata
 LABEL maintainer="Andrii Sych <asych@myseneca.ca>" \
       description="Fragments node.js microservice"
 
-# We default to use port 8080 in our service
-ENV PORT=8080
-
-# Reduce npm spam when installing within Docker
-# https://docs.npmjs.com/cli/v8/using-npm/config#loglevel
-ENV NPM_CONFIG_LOGLEVEL=warn
-
-# Disable colour when run inside Docker
-# https://docs.npmjs.com/cli/v8/using-npm/config#color
-ENV NPM_CONFIG_COLOR=false
-
 # Use /app as our working directory
 WORKDIR /app
 
 # Copy the package.json and package-lock.json
-COPY package.json package-lock.json ./
+COPY --chown=node:node package.json package-lock.json ./
 
 # Install node dependencies defined in package-lock.json
-RUN npm install
+RUN npm ci --only=production
 
-# Copy src to /app/src/
-COPY ./src ./src
+################################################################################################
 
-# Copy our HTPASSWD file
-COPY ./tests/.htpasswd ./tests/.htpasswd
+### Stage 1: Running the express server
 
-# Start the container by running our server
-CMD npm start
+FROM node:lts-alpine3.17@sha256:b45e71e98bd0eecd4b694c7fb0281e08e06a384de26a986d241d348926692318 AS running
 
-# We run our service on port 8080
-EXPOSE 8080
+# Install curl
+RUN apk update && apk --no-cache add curl
+
+WORKDIR /app
+
+# We default to use port 80 when using our service in production
+ENV PORT=80 \
+    NODE_ENV=production \
+    NPM_CONFIG_LOGLEVEL=warn \
+    NPM_CONFIG_COLOR=false
+
+# Copy cached dependencies from previous stage so we don't have to download
+COPY --from=dependencies \
+     --chown=node:node /app /app
+
+# Copy source code into the image
+COPY --chown=node:node . .
+
+USER node
+
+# Start the serever
+CMD ["npm", "start"]
+
+# We run our service on port 80
+EXPOSE 80
+
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
+  CMD curl --verbose --fail localhost:80 || exit 1
