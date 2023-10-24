@@ -8,9 +8,11 @@ on:
   pull_request:
     branches:
       - assignment1
+      - lab6
   push:
     branches:
       - assignment1
+      - lab6
 
 jobs:
   lint:
