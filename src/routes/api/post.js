@@ -8,51 +8,56 @@ const apiURL = process.env.API_URL;
  * Create a fragment for current user.
  */
 module.exports = async (req, res) => {
-  const type = req.get('Content-Type');
-
-  logger.debug(
-    {
-      buffer: req.body,
-      type,
-      user: req.user,
-    },
-    'Received /POST request'
-  );
-
-  if (Fragment.isSupportedType(type) && Buffer.isBuffer(req.body)) {
-    const f = new Fragment({
-      ownerId: req.user,
-      type,
-    });
+  try {
+    const type = req.get('Content-Type');
 
     logger.debug(
       {
-        data: req.body,
-        length: req.body.length,
+        buffer: req.body,
+        type,
+        user: req.user,
       },
-      'Saving fragment data to the database...'
+      'Received /POST request'
     );
 
-    await f.setData(req.body);
-    await f.save();
+    if (Fragment.isSupportedType(type) && Buffer.isBuffer(req.body)) {
+      const f = new Fragment({
+        ownerId: req.user,
+        type,
+      });
 
-    const host = apiURL ? new URL(apiURL).host : req.get('host');
-    const currentUrl = req.protocol + '://' + host + req.originalUrl;
-
-    const location = new URL(currentUrl);
-    location.pathname = `/${f.id}`;
-
-    res.setHeader('Location', location);
-
-    res.status(201).json(
-      createSuccessResponse({
-        fragment: {
-          ...f,
+      logger.debug(
+        {
+          data: req.body,
+          length: req.body.length,
         },
-      })
-    );
-  } else {
-    logger.warn({}, 'Unable to create a fragment!');
+        'Saving fragment data to the database...'
+      );
+
+      await f.setData(req.body);
+      await f.save();
+
+      const host = apiURL ? new URL(apiURL).host : req.get('host');
+      const currentUrl = req.protocol + '://' + host + req.originalUrl;
+
+      const location = new URL(currentUrl);
+      location.pathname = `/${f.id}`;
+
+      res.setHeader('Location', location);
+
+      res.status(201).json(
+        createSuccessResponse({
+          fragment: {
+            ...f,
+          },
+        })
+      );
+    } else {
+      logger.warn({}, 'Unable to create a fragment!');
+      res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
+    }
+  } catch (error) {
+    logger.warn({ error: error.message }, 'Unable to create a fragment!');
     res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
   }
 };

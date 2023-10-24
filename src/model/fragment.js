@@ -13,6 +13,7 @@ const {
   listFragments,
   deleteFragment,
 } = require('./data');
+const logger = require('../logger');
 
 class Fragment {
   static validTypes = [
@@ -126,9 +127,18 @@ class Fragment {
     if (!Buffer.isBuffer(data)) {
       throw new TypeError('Expected data to be of type Buffer');
     }
+    this.validateBuffer(data);
+
     this.size = data.length;
+
     await writeFragmentData(this.ownerId, this.id, data);
     await this.save();
+  }
+
+  validateBuffer(data) {
+    if (this.type == 'application/json') {
+      JSON.parse(data.toString());
+    }
   }
 
   /**
