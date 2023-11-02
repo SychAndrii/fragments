@@ -1,9 +1,7 @@
 # Continuous Integration (CI) Workflow
 name: ci
 
-# This workflow will run whenever we push commits to the `main` branch, or
-# whenever there's a pull request to the `main` branch. See:
-# https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#on
+# Triggers the workflow on pull request or push events for the specified branches
 on:
   pull_request:
     branches:
@@ -16,7 +14,9 @@ on:
       - lab6
       - lab7
 
+# Defines the jobs to run
 jobs:
+  # Linting job
   lint:
     name: ESLint
     runs-on: ubuntu-latest
@@ -33,6 +33,7 @@ jobs:
       - name: Run ESLint
         run: npm run lint
 
+  # Dockerfile linting job
   dockerfile-lint:
     name: Dockerfile Lint
     runs-on: ubuntu-latest
@@ -42,6 +43,7 @@ jobs:
         with:
           dockerfile: Dockerfile
 
+  # Unit testing job
   unit-tests:
     name: Unit Tests
     runs-on: ubuntu-latest
@@ -55,3 +57,25 @@ jobs:
           cache: 'npm'
       - name: Install node dependencies and run Tests
         run: npm install-ci-test
+
+  # Docker Hub build and push job
+  docker-hub:
+    name: Build and Push to Docker Hub
+    needs: [lint, dockerfile-lint, unit-tests]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: Build and push
+        env:
+          DOCKERHUB_REPO: username/fragments
+          SHA_TAG: sha-${{ github.sha }}
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ${{ env.DOCKERHUB_REPO }}:${{ env.SHA_TAG }}, ${{ env.DOCKERHUB_REPO }}:main, ${{ env.DOCKERHUB_REPO }}:latest
