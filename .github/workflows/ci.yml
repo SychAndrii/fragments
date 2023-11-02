@@ -14,6 +14,7 @@ on:
     branches:
       - assignment1
       - lab6
+      - lab7
 
 jobs:
   lint:
