@@ -22,7 +22,7 @@ RUN npm ci --only=production
 FROM node:lts-alpine3.17@sha256:b45e71e98bd0eecd4b694c7fb0281e08e06a384de26a986d241d348926692318 AS running
 
 # Install curl
-RUN apk update && apk --no-cache add curl
+RUN apk update && apk --no-cache add curl=8.4.0-r0
 
 WORKDIR /app
 
