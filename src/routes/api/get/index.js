@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
     'Received /GET request.'
   );
 
-  const fragments = await Fragment.byUser(req.user, req.query.expand);
+  const fragments = await Fragment.byUser(req.user, +req.query.expand);
 
   return res.status(200).json(
     createSuccessResponse({

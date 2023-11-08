@@ -44,6 +44,62 @@ describe('GET/:id route', () => {
     });
   });
 
+  describe('Response headers', () => {
+    test('Content-type of response matches the content-type of request', async () => {
+      let res = await request(app)
+        .post('/v1/fragments')
+        .send('{"kekw": 123}')
+        .set('Content-Type', 'application/json')
+        .auth('user1@email.com', 'password1');
+
+      res = await request(app)
+        .get(`/v1/fragments/${res.body.fragment.id}`)
+        .auth('user1@email.com', 'password1');
+        
+      expect(res.headers['content-type'].startsWith('application/json')).toBe(true);
+
+      res = await request(app)
+        .post('/v1/fragments')
+        .send('Hello there my friend')
+        .set('Content-Type', 'text/plain')
+        .auth('user1@email.com', 'password1');
+
+      res = await request(app)
+        .get(`/v1/fragments/${res.body.fragment.id}`)
+        .auth('user1@email.com', 'password1');
+        
+      expect(res.headers['content-type'].startsWith('text/plain')).toBe(true);
+    });
+
+    test('Content-size of response matches the content-size of request', async () => {
+      let res = await request(app)
+        .post('/v1/fragments')
+        .send('{"kekw": 123}')
+        .set('Content-Type', 'application/json')
+        .auth('user1@email.com', 'password1');
+
+      res = await request(app)
+        .get(`/v1/fragments/${res.body.fragment.id}`)
+        .auth('user1@email.com', 'password1');
+
+      console.log(res.headers);
+        
+      expect(+res.headers['content-length']).toBe(13);
+
+      res = await request(app)
+        .post('/v1/fragments')
+        .send('Hello there my friend')
+        .set('Content-Type', 'text/plain')
+        .auth('user1@email.com', 'password1');
+
+      res = await request(app)
+        .get(`/v1/fragments/${res.body.fragment.id}`)
+        .auth('user1@email.com', 'password1');
+        
+        expect(+res.headers['content-length']).toBe(21);
+    });
+  });
+
   describe('Response body', () => {
     test('Returns fragment as text if fragment exists for current user', async () => {
       const postRes = await request(app)
@@ -53,7 +109,6 @@ describe('GET/:id route', () => {
         .auth('user1@email.com', 'password1');
 
       const createdFragment = postRes.body.fragment;
-      console.log(createdFragment);
       const res = await request(app)
         .get(`/v1/fragments/${createdFragment.id}`)
         .auth('user1@email.com', 'password1');

@@ -77,19 +77,7 @@ describe('POST route', () => {
     });
   });
 
-  describe('Media type header', () => {
-    test('Invalid content types are rejected', async () => {
-      const invalidContentTypes = ['text/plai', 'imaeg', 'asdasdqwdcasc'];
-      for (const type of invalidContentTypes) {
-        const res = await request(app)
-          .post('/v1/fragments')
-          .send('This is a fragment')
-          .set('Content-Type', type)
-          .auth('user1@email.com', 'password1');
-        expect(res.statusCode).toBe(415);
-      }
-    });
-
+  describe('json fragments', () => {
     test('Valid fragments with application/json content type are allowed', async () => {
       let res = await request(app)
         .post('/v1/fragments')
@@ -127,6 +115,20 @@ describe('POST route', () => {
         .set('Content-Type', 'application/json')
         .auth('user1@email.com', 'password1');
       expect(res.statusCode).toBe(415);
+    });
+  })
+
+  describe('Media type header', () => {
+    test('Invalid content types are rejected', async () => {
+      const invalidContentTypes = ['text/plai', 'imaeg', 'asdasdqwdcasc'];
+      for (const type of invalidContentTypes) {
+        const res = await request(app)
+          .post('/v1/fragments')
+          .send('This is a fragment')
+          .set('Content-Type', type)
+          .auth('user1@email.com', 'password1');
+        expect(res.statusCode).toBe(415);
+      }
     });
 
     test('Media type prefix for content type only is allowed for authenticated users', async () => {

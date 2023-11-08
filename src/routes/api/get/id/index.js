@@ -1,6 +1,6 @@
-const logger = require('../../../logger');
-const { Fragment } = require('../../../model/fragment');
-const { createErrorResponse } = require('../../../response');
+const logger = require('../../../../logger');
+const { Fragment } = require('../../../../model/fragment');
+const { createErrorResponse } = require('../../../../response');
 
 /**
  * Get a fragment by id for current user
@@ -16,10 +16,10 @@ module.exports = async (req, res) => {
   );
   try {
     const fragment = await Fragment.byId(req.user, id);
+    console.log(fragment);
     const fragmentBody = await fragment.getData();
 
     res.setHeader('Content-Length', fragment.size);
-    res.setHeader('Content-Type', fragment.type);
 
     logger.debug(
       {
@@ -28,7 +28,7 @@ module.exports = async (req, res) => {
       'Sending fragment body'
     );
 
-    return res.status(200).send(fragmentBody);
+    return res.status(200).type(fragment.type).send(fragmentBody);
   } catch (error) {
     logger.error(
       {
