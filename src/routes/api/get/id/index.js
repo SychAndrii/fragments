@@ -16,7 +16,6 @@ module.exports = async (req, res) => {
   );
   try {
     const fragment = await Fragment.byId(req.user, id);
-    console.log(fragment);
     const fragmentBody = await fragment.getData();
 
     res.setHeader('Content-Length', fragment.size);
