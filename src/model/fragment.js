@@ -26,6 +26,17 @@ class Fragment {
     `image/gif`,
   ];
 
+  static validConversions = {
+    'text/plain': ['txt'],
+    'text/markdown': ['md', 'html', 'txt'],
+    'text/html': ['html', 'txt'],
+    'application/json': ['json', 'txt'],
+    'image/png': ['png', 'jpg', 'webp', 'gif'],
+    'image/jpeg': ['png', 'jpg', 'webp', 'gif'],
+    'image/webp': ['png', 'jpg', 'webp', 'gif'],
+    'image/gif': ['png', 'jpg', 'webp', 'gif'],
+  };
+
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     const requiredProperties = ['ownerId', 'type'];
 
@@ -164,7 +175,8 @@ class Fragment {
    * @returns {Array<string>} list of supported mime types
    */
   get formats() {
-    return ['text/plain'];
+    const mimeType = this.mimeType;
+    return Fragment.validConversions[mimeType];
   }
 
   /**
