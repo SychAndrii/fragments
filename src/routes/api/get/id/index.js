@@ -51,7 +51,6 @@ module.exports = async (req, res) => {
     else if (error instanceof ConversionNotAllowed) {
       res.status(415).json(createErrorResponse(415, 'Conversion not allowed!'));
     } else {
-      console.log(error.message);
       res.status(500).json(createErrorResponse(500, error.message));
     }
   }
