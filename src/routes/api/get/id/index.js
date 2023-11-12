@@ -1,7 +1,8 @@
+const ConversionNotAllowed = require('../../../../errors/ConversionNotAllowed');
+const FragmentNotFound = require('../../../../errors/FragmentNotFound');
 const logger = require('../../../../logger');
 const { Fragment } = require('../../../../model/fragment');
 const { createErrorResponse } = require('../../../../response');
-var md = require('markdown-it')();
 
 /**
  * Get a fragment by id for current user
@@ -18,51 +19,40 @@ module.exports = async (req, res) => {
 
   try {
     const lastDotPos = id.lastIndexOf('.');
-
-    if(lastDotPos !== -1) {
+    if (lastDotPos !== -1) {
       const idWithoutExtension = id.substring(0, lastDotPos);
       const extension = id.substring(lastDotPos + 1);
-      
       const fragment = await Fragment.byId(req.user, idWithoutExtension);
 
-      const formats = fragment.formats;
-      const fragmentBody = await fragment.getData();
-
-      logger.info({
+      const { convertedData, dataType, dataLength } = await Fragment.getConvertedData(
+        fragment,
         extension
-      }, 'INSIDE EXTENSION')
+      );
 
-      if(formats.includes(extension)) {
-        const mdData = md.render(fragmentBody.toString());
-        res.setHeader('Content-Length', mdData.length);
-    
-        return res.status(200).type('text/markdown').send(mdData);
-      }
-    }
-    else {
-      console.log(id);
+      res.setHeader('Content-Length', dataLength);
+      return res.status(200).type(dataType).send(convertedData);
+    } else {
       const fragment = await Fragment.byId(req.user, id);
       const fragmentBody = await fragment.getData();
 
-      res.setHeader('Content-Length', fragment.size);
-  
       logger.debug(
         {
           fragment,
         },
         'Sending fragment body'
       );
-  
+
       return res.status(200).type(fragment.type).send(fragmentBody);
     }
   } catch (error) {
-    logger.error(
-      {
-        id,
-        message: error.message,
-      },
-      'Unable to send fragment body!'
-    );
-    res.status(404).json(createErrorResponse(404, 'Unable to send fragment body!'));
+    if (error instanceof FragmentNotFound) {
+      res.status(404).json(createErrorResponse(404, 'Unable to send fragment body!'));
+    }
+    else if (error instanceof ConversionNotAllowed) {
+      res.status(415).json(createErrorResponse(415, 'Conversion not allowed!'));
+    } else {
+      console.log(error.message);
+      res.status(500).json(createErrorResponse(500, error.message));
+    }
   }
 };

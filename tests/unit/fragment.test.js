@@ -155,13 +155,27 @@ describe('Fragment class', () => {
   });
 
   describe('formats', () => {
-    test('formats returns the expected result for plain text', () => {
-      const fragment = new Fragment({
-        ownerId: '1234',
-        type: 'text/plain; charset=utf-8',
-        size: 0,
-      });
-      expect(fragment.formats).toEqual(['text/plain']);
+    test('formats returns the expected result for mime type of a fragment', () => {
+      const validConversions = {
+        'text/plain': ['txt'],
+        'text/markdown': ['md', 'html', 'txt'],
+        'text/html': ['html', 'txt'],
+        'application/json': ['json', 'txt'],
+        'image/png': ['png', 'jpg', 'webp', 'gif'],
+        'image/jpeg': ['png', 'jpg', 'webp', 'gif'],
+        'image/webp': ['png', 'jpg', 'webp', 'gif'],
+        'image/gif': ['png', 'jpg', 'webp', 'gif'],
+      };
+
+      for(const mimeType in validConversions) {
+        const validExtensions = validConversions[mimeType];
+        const fragment = new Fragment({
+          ownerId: '1234',
+          type: mimeType,
+          size: 0,
+        });
+        expect(fragment.formats).toEqual(validExtensions);
+      }
     });
   });
 

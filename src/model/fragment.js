@@ -3,7 +3,9 @@
 const { randomUUID } = require('crypto');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
+const ConverterFactory = require('./converters/ConverterFactory')
 
+const FragmentNotFound = require('../errors/FragmentNotFound')
 // Functions for working with fragment metadata/data using our DB
 const {
   readFragment,
@@ -25,17 +27,6 @@ class Fragment {
     `image/webp`,
     `image/gif`,
   ];
-
-  static validConversions = {
-    'text/plain': ['txt'],
-    'text/markdown': ['md', 'html', 'txt'],
-    'text/html': ['html', 'txt'],
-    'application/json': ['json', 'txt'],
-    'image/png': ['png', 'jpg', 'webp', 'gif'],
-    'image/jpeg': ['png', 'jpg', 'webp', 'gif'],
-    'image/webp': ['png', 'jpg', 'webp', 'gif'],
-    'image/gif': ['png', 'jpg', 'webp', 'gif'],
-  };
 
   constructor({ id, ownerId, created, updated, type, size = 0 }) {
     const requiredProperties = ['ownerId', 'type'];
@@ -79,6 +70,12 @@ class Fragment {
     this.size = size;
   }
 
+  static async getConvertedData(fragment, extension) {
+    const converterFactory = new ConverterFactory(fragment, extension);
+    const converter = converterFactory.createConverter();
+    return converter.convert();
+  }
+
   /**
    * Get all fragments (id or full) for the given user
    * @param {string} ownerId user's hashed email
@@ -97,7 +94,7 @@ class Fragment {
    */
   static async byId(ownerId, id) {
     const fr = await readFragment(ownerId, id);
-    if (!fr) throw new Error('Fragment does not exist!');
+    if (!fr) throw new FragmentNotFound(id, ownerId);
     return fr;
   }
 
@@ -176,7 +173,7 @@ class Fragment {
    */
   get formats() {
     const mimeType = this.mimeType;
-    return Fragment.validConversions[mimeType];
+    return ConverterFactory.validConversions[mimeType];
   }
 
   /**

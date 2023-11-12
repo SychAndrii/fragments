@@ -34,6 +34,10 @@ module.exports = async (req, res) => {
         'Saving fragment data to the database...'
       );
 
+      if(req.body.toString() == '{key: "value"}') {
+        console.log();
+      }
+
       await f.setData(req.body);
       await f.save();
 
