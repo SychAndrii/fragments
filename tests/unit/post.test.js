@@ -1,57 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/app');
-
-const complexJSONObject = {
-  users: [
-    {
-      id: 1,
-      name: 'John Doe',
-      email: 'johndoe@example.com',
-      address: {
-        street: 'Baker Street',
-        city: 'London',
-        postalCode: 'NW1 6XE',
-        geo: {
-          lat: '51.5237',
-          lng: '-0.1585',
-        },
-      },
-      phoneNumbers: ['+44-20-1234-5678', '+44-20-8765-4321'],
-      website: 'johndoe.com',
-      company: {
-        name: 'Doe Enterprises',
-        catchPhrase: 'Leadership in Innovation',
-        industry: 'IT',
-      },
-    },
-    {
-      id: 2,
-      name: 'Jane Smith',
-      email: 'janesmith@example.com',
-      address: {
-        street: '5th Avenue',
-        city: 'New York',
-        postalCode: '10001',
-        geo: {
-          lat: '40.7128',
-          lng: '-74.0060',
-        },
-      },
-      phoneNumbers: ['+1-212-123-4567', '+1-212-765-4321'],
-      website: 'janesmith.net',
-      company: {
-        name: 'Smith & Co.',
-        catchPhrase: 'Innovate, Integrate, Motivate',
-        industry: 'Finance',
-      },
-    },
-  ],
-  metadata: {
-    timestamp: '2023-10-23T10:00:00Z',
-    version: '1.0',
-    source: 'Assistant DB',
-  },
-};
+const {complexHtmlFile, complexMdFile, complexJSONObject} = require('../data');
 
 describe('POST route', () => {
   describe('Log-in credentials', () => {
@@ -116,7 +65,43 @@ describe('POST route', () => {
         .auth('user1@email.com', 'password1');
       expect(res.statusCode).toBe(415);
     });
-  })
+  });
+
+  describe('markdown fragments', () => {
+    test('Fragments with text/markdown content type are allowed', async () => {
+      let res = await request(app)
+        .post('/v1/fragments')
+        .send('# Sample header')
+        .set('Content-Type', 'text/markdown')
+        .auth('user1@email.com', 'password1');
+      expect(res.statusCode).toBe(201);
+
+      res = await request(app)
+        .post('/v1/fragments')
+        .send(complexMdFile)
+        .set('Content-Type', 'text/markdown; charset=UTF-8')
+        .auth('user1@email.com', 'password1');
+      expect(res.statusCode).toBe(201);
+    });
+  });
+
+  describe('html fragments', () => {
+    test('Fragments with text/html content type are allowed', async () => {
+      let res = await request(app)
+        .post('/v1/fragments')
+        .send('<h1>Sample header</h1>')
+        .set('Content-Type', 'text/html')
+        .auth('user1@email.com', 'password1');
+      expect(res.statusCode).toBe(201);
+
+      res = await request(app)
+        .post('/v1/fragments')
+        .send(complexHtmlFile)
+        .set('Content-Type', 'text/html')
+        .auth('user1@email.com', 'password1');
+      expect(res.statusCode).toBe(201);
+    });
+  });
 
   describe('Media type header', () => {
     test('Invalid content types are rejected', async () => {
@@ -131,16 +116,22 @@ describe('POST route', () => {
       }
     });
 
-    test('Media type prefix for content type only is allowed for authenticated users', async () => {
-      let res = await request(app)
-        .post('/v1/fragments')
-        .send('This is a fragment')
-        .set('Content-Type', 'text/plain')
-        .auth('user1@email.com', 'password1');
-      expect(res.statusCode).toBe(201);
+    test('Media type prefix only for content type is allowed', async () => {
+      const mediaTypes = ['text/markdown', 'text/plain', 'application/json', 'text/html'];
+
+      for (const mediaType of mediaTypes) {
+        const body = mediaType.startsWith('text/') ? 'This is a fragment' : complexJSONObject;
+        
+        let res = await request(app)
+          .post('/v1/fragments')
+          .send(body)
+          .set('Content-Type', mediaType)
+          .auth('user1@email.com', 'password1');
+        expect(res.statusCode).toBe(201);
+      }
     });
 
-    test('Media type with charset for content type is allowed for authenticated users', async () => {
+    test('Media type with charset for content type is allowed', async () => {
       const validContentTypes = [
         'text/html; charset=utf-8',
         'text/plain; charset=utf-8',
@@ -206,7 +197,7 @@ describe('POST route', () => {
     });
   });
 
-  describe('Response body', () => {
+  describe('Response structure', () => {
     test('Unsuccessful request returns error status and error object of correct structure', async () => {
       const res = await request(app)
         .post('/v1/fragments')
