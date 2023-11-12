@@ -24,12 +24,11 @@ module.exports = async (req, res) => {
       const extension = id.substring(lastDotPos + 1);
       const fragment = await Fragment.byId(req.user, idWithoutExtension);
 
-      const { convertedData, dataType, dataLength } = await Fragment.getConvertedData(
+      const { convertedData, dataType } = await Fragment.getConvertedData(
         fragment,
         extension
       );
 
-      res.setHeader('Content-Length', dataLength);
       return res.status(200).type(dataType).send(convertedData);
     } else {
       const fragment = await Fragment.byId(req.user, id);
@@ -41,6 +40,7 @@ module.exports = async (req, res) => {
         },
         'Sending fragment body'
       );
+      res.header('Content-Length', fragment.size);
 
       return res.status(200).type(fragment.type).send(fragmentBody);
     }
