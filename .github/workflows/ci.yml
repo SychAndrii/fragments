@@ -5,14 +5,10 @@ name: ci
 on:
   pull_request:
     branches:
-      - assignment1
-      - lab6
-      - lab7
+      - assignment2
   push:
     branches:
-      - assignment1
-      - lab6
-      - lab7
+      - assignment2
 
 # Defines the jobs to run
 jobs:
