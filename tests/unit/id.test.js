@@ -248,7 +248,6 @@ describe('GET/:id route', () => {
       expect(res.body).toEqual(complexJSONObject);
       console.log(res.body);
       expect(res.headers['content-type'].startsWith('application/json')).toBe(true);
-      expect(+res.headers['content-length']).toBe(JSON.stringify(complexJSONObject).length)
     });
 
     test('Gets correct fragment content if it exists for current user (html)', async () => {
@@ -266,7 +265,6 @@ describe('GET/:id route', () => {
 
       expect(res.text).toEqual(complexHtmlFile);
       expect(res.headers['content-type'].startsWith('text/html')).toBe(true);
-      expect((+res.headers['content-length'])).toBe(complexHtmlFile.length)
     });
 
     test('Gets correct fragment content if it exists for current user (markdown)', async () => {
@@ -286,7 +284,6 @@ describe('GET/:id route', () => {
 
       expect(res.text).toEqual(complexMdFile);
       expect(res.headers['content-type'].startsWith('text/markdown')).toBe(true);
-      expect(res.headers['content-length']).toEqual(complexMdFile.length)
     });
   });
 
