@@ -36,10 +36,12 @@
                     "name": "AWS_COGNITO_POOL_ID"
                 },
                 {
-                    "name": "HTPASSWD_FILE"
+                    "name": "HTPASSWD_FILE",
+                    "value": "tests/.htpasswd"
                 },
                 {
-                    "name": "PORT"
+                    "name": "PORT",
+                    "value": 8080
                 }
             ],
             "resourceRequirements": null,
