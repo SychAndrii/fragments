@@ -2,6 +2,7 @@ const { Router } = require('express');
 const { author, version } = require('../../package.json');
 const { authenticate } = require('../auth');
 const { createSuccessResponse } = require('../response');
+const { hostname } = require('os');
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.get('/', (req, res) => {
 
   res.status(200).json(
     createSuccessResponse({
+      hostname: hostname(),
       author,
       githubUrl: 'https://github.com/SychAndrii/fragments.git',
       version,

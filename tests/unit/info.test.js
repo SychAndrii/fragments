@@ -1,7 +1,7 @@
 const request = require('supertest');
 const app = require('../../src/app');
 
-describe('GET/:id route', () => {
+describe('GET/:id/info route', () => {
   describe('Log-in credentials', () => {
     test('Does not allow access for unauthenticated users', async () => {
       const res = await request(app).get('/v1/fragments/123/info');
