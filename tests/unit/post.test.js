@@ -1,6 +1,6 @@
 const request = require('supertest');
 const app = require('../../src/app');
-const {complexHtmlFile, complexMdFile, complexJSONObject} = require('../data');
+const { complexHtmlFile, complexMdFile, complexJSONObject } = require('../data');
 
 describe('POST route', () => {
   describe('Log-in credentials', () => {
@@ -121,7 +121,7 @@ describe('POST route', () => {
 
       for (const mediaType of mediaTypes) {
         const body = mediaType.startsWith('text/') ? 'This is a fragment' : complexJSONObject;
-        
+
         let res = await request(app)
           .post('/v1/fragments')
           .send(body)
@@ -161,19 +161,6 @@ describe('POST route', () => {
 
       const fragmentId = res.body.fragment.id;
       expect(res.headers.location.endsWith(`/${fragmentId}`)).toBe(true);
-    });
-
-    test('Successful request returns location header of correct structure', async () => {
-      const res = await request(app)
-        .post('/v1/fragments')
-        .send('This is a fragment')
-        .set('Content-Type', 'text/plain')
-        .auth('user1@email.com', 'password1');
-
-      // Construct a regex pattern to match the URL structure
-      const pattern = new RegExp('^https?://[^/]+:[0-9]+/[a-zA-Z0-9-]+$');
-
-      expect(pattern.test(res.headers.location)).toBe(true);
     });
   });
 

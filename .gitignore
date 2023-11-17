@@ -72,6 +72,9 @@ docker-token.txt
 # Output of 'npm pack'
 *.tgz
 
+# Installation of aws cli
+aws
+
 # Yarn Integrity file
 .yarn-integrity
 
