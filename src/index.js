@@ -1,6 +1,6 @@
 // Read environment variables from an .env file (if present)
 // NOTE: we only need to do this once in our app's main entry point.
-require('dotenv').config();
+require('dotenv').config({ path: process.env.DOTENV_CONFIG_PATH || '.env' });
 const logger = require('./logger');
 
 // If we're going to crash because of an uncaught exception, log it first.

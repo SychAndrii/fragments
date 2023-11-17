@@ -41,7 +41,7 @@ module.exports = async (req, res) => {
       const currentUrl = req.protocol + '://' + host + req.originalUrl;
 
       const location = new URL(currentUrl);
-      location.pathname = `/${f.id}`;
+      location.pathname = `/v1/fragments/${f.id}`;
 
       res.setHeader('Location', location);
 
