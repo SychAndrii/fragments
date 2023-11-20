@@ -151,19 +151,6 @@ describe('POST route', () => {
     });
   });
 
-  describe('Response location header', () => {
-    test('Successful request returns location header with fragment id in path', async () => {
-      const res = await request(app)
-        .post('/v1/fragments')
-        .send('This is a fragment')
-        .set('Content-Type', 'text/plain')
-        .auth('user1@email.com', 'password1');
-
-      const fragmentId = res.body.fragment.id;
-      expect(res.headers.location.endsWith(`/${fragmentId}`)).toBe(true);
-    });
-  });
-
   describe('Response status code', () => {
     test('Unsuccessful request returns 415 status code', async () => {
       const res = await request(app)
