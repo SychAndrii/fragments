@@ -74,6 +74,7 @@ docker-token.txt
 
 # Installation of aws cli
 aws
+!/src/model/data/aws/
 
 # Yarn Integrity file
 .yarn-integrity
