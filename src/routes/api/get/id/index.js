@@ -32,6 +32,9 @@ module.exports = async (req, res) => {
       return res.status(200).type(dataType).send(convertedData);
     } else {
       const fragment = await Fragment.byId(req.user, id);
+      logger.info({
+        fragment
+      }, 'PRINTING FRAGMENT');
       const fragmentBody = await fragment.getData();
 
       logger.debug(
@@ -45,6 +48,10 @@ module.exports = async (req, res) => {
       return res.status(200).type(fragment.type).send(fragmentBody);
     }
   } catch (error) {
+    logger.error({
+      error,
+      message: error.message
+    }, 'GOT ERROR WHILE GET/ REQUEST');
     if (error instanceof FragmentNotFound) {
       res.status(404).json(createErrorResponse(404, 'Unable to send fragment body!'));
     }

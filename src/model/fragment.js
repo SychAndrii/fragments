@@ -95,7 +95,7 @@ class Fragment {
   static async byId(ownerId, id) {
     const fr = await readFragment(ownerId, id);
     if (!fr) throw new FragmentNotFound(id, ownerId);
-    return fr;
+    return new Fragment({...fr});
   }
 
   /**
