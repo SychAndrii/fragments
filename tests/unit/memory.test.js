@@ -3,7 +3,7 @@ const {
   readFragment,
   writeFragmentData,
   readFragmentData,
-} = require('../../src/model/memory/');
+} = require('../../src/model/data/memory/');
 const { Buffer } = require('node:buffer');
 
 describe('fragments API', () => {
