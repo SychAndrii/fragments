@@ -25,7 +25,7 @@ header "Content-Type" == "application/json; charset=utf-8"
 jsonpath "$.fragment.id" == {{fragment1_id}}
 jsonpath "$.status" == "ok"
 jsonpath "$.fragment.type" == "application/json"
-jsonpath "$.fragment.size" == 31
+jsonpath "$.fragment.size" == 33
 
 POST http://localhost:8080/v1/fragments
 Content-Type: text/markdown

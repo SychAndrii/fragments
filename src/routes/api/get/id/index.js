@@ -32,17 +32,7 @@ module.exports = async (req, res) => {
       return res.status(200).type(dataType).send(convertedData);
     } else {
       const fragment = await Fragment.byId(req.user, id);
-      logger.info({
-        fragment
-      }, 'PRINTING FRAGMENT');
       const fragmentBody = await fragment.getData();
-
-      logger.debug(
-        {
-          fragment,
-        },
-        'Sending fragment body'
-      );
       res.header('Content-Length', fragment.size);
 
       return res.status(200).type(fragment.type).send(fragmentBody);

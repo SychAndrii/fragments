@@ -3,7 +3,7 @@
 const { randomUUID } = require('crypto');
 // Use https://www.npmjs.com/package/content-type to create/parse Content-Type headers
 const contentType = require('content-type');
-const ConverterFactory = require('./converters/ConverterFactory')
+const ConverterFactory = require('./converters/ConverterFactory');
 
 const FragmentNotFound = require('../errors/FragmentNotFound')
 // Functions for working with fragment metadata/data using our DB
@@ -134,7 +134,7 @@ class Fragment {
     if (!Buffer.isBuffer(data)) {
       throw new TypeError('Expected data to be of type Buffer');
     }
-    this.validateBuffer(data);
+    await this.validateBuffer(data);
 
     this.size = data.length;
 
@@ -142,7 +142,7 @@ class Fragment {
     await this.save();
   }
 
-  validateBuffer(data) {
+  async validateBuffer(data) {
     if (this.type == 'application/json') {
       JSON.parse(data.toString());
     }

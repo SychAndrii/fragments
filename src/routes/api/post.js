@@ -11,28 +11,11 @@ module.exports = async (req, res) => {
   try {
     const type = req.get('Content-Type');
 
-    logger.debug(
-      {
-        buffer: req.body,
-        type,
-        user: req.user,
-      },
-      'Received /POST request'
-    );
-
     if (Fragment.isSupportedType(type) && Buffer.isBuffer(req.body)) {
       const f = new Fragment({
         ownerId: req.user,
         type,
       });
-
-      logger.debug(
-        {
-          data: req.body,
-          length: req.body.length,
-        },
-        'Saving fragment data to the database...'
-      );
 
       await f.setData(req.body);
       await f.save();

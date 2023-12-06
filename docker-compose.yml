@@ -33,7 +33,7 @@ services:
     # Ports to publish
     ports:
       - '8080:8080'
-    command: ["npm", "run", "basic-auth"]
+    command: ["npm", "run", "test:integration:server"]
   # DynamoDB Local, see: https://hub.docker.com/r/amazon/dynamodb-local
   dynamodb-local:
     image: amazon/dynamodb-local
