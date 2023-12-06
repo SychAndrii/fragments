@@ -5,7 +5,7 @@ const { randomUUID } = require('crypto');
 const contentType = require('content-type');
 const ConverterFactory = require('./converters/ConverterFactory');
 
-const FragmentNotFound = require('../errors/FragmentNotFound')
+const FragmentNotFound = require('../errors/FragmentNotFound');
 // Functions for working with fragment metadata/data using our DB
 const {
   readFragment,
@@ -15,6 +15,7 @@ const {
   listFragments,
   deleteFragment,
 } = require('./data');
+const MimeTypesDoNotMatch = require('../errors/MimeTypesDoNotMatch');
 
 class Fragment {
   static validTypes = [
@@ -95,7 +96,7 @@ class Fragment {
   static async byId(ownerId, id) {
     const fr = await readFragment(ownerId, id);
     if (!fr) throw new FragmentNotFound(id, ownerId);
-    return new Fragment({...fr});
+    return new Fragment({ ...fr });
   }
 
   /**
@@ -143,7 +144,14 @@ class Fragment {
   }
 
   async validateBuffer(data) {
-    if (this.type == 'application/json') {
+    if (this.type.startsWith('image')) {
+      const { fileTypeFromBuffer } = await import('file-type');
+      const { mime } = await fileTypeFromBuffer(data);
+      if (this.type !== mime) {
+        throw new MimeTypesDoNotMatch(this.id, this.type, mime);
+      }
+    }
+    else if (this.type == 'application/json') {
       JSON.parse(data.toString());
     }
   }

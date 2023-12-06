@@ -1,6 +1,7 @@
 const { createSuccessResponse, createErrorResponse } = require('../../response');
 const { Fragment } = require('../../model/fragment');
 const logger = require('../../logger');
+const MimeTypesDoNotMatch = require('../../errors/MimeTypesDoNotMatch');
 
 const apiURL = process.env.API_URL;
 
@@ -41,6 +42,12 @@ module.exports = async (req, res) => {
     }
   } catch (error) {
     logger.warn({ error: error.message }, 'Unable to create a fragment!');
-    res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
+    
+    if(error instanceof MimeTypesDoNotMatch) {
+      res.status(400).json(createErrorResponse(400, 'Mime types do not match!'));
+    }
+    else {
+      res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
+    }
   }
 };
