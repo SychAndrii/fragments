@@ -1,4 +1,4 @@
-const Converter = require("../../src/model/converters/Converter");
+const Converter = require("../../../../src/model/converters/Converter");
 
 describe('Converter class', () => {
     test('constructor', () => {

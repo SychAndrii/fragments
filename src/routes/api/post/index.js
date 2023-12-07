@@ -1,7 +1,7 @@
-const { createSuccessResponse, createErrorResponse } = require('../../response');
-const { Fragment } = require('../../model/fragment');
-const logger = require('../../logger');
-const MimeTypesDoNotMatch = require('../../errors/MimeTypesDoNotMatch');
+const { createSuccessResponse, createErrorResponse } = require('../../../response');
+const { Fragment } = require('../../../model/fragment');
+const logger = require('../../../logger');
+const MimeTypesDoNotMatch = require('../../../errors/MimeTypesDoNotMatch');
 
 const apiURL = process.env.API_URL;
 

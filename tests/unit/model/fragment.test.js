@@ -1,4 +1,4 @@
-const { Fragment } = require('../../src/model/fragment');
+const { Fragment } = require('../../../src/model/fragment');
 
 // Wait for a certain number of ms. Feel free to change this value
 // if it isn't long enough for your test runs. Returns a Promise.
