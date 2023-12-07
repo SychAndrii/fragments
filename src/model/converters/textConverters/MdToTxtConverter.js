@@ -1,5 +1,5 @@
 const Converter = require("../Converter");
-const md = require('markdown-it')();
+const removeMd = require('remove-markdown');
 
 class MdToTxtConverter extends Converter {
     constructor(fragment) {
@@ -8,12 +8,12 @@ class MdToTxtConverter extends Converter {
 
     async convert() {
         const fragmentData = await this.fragment.getData();
-        const mdData = md.render(fragmentData.toString());
+        const text = removeMd(fragmentData.toString());
         
         return {
-            dataType: 'text/html',
-            dataLength: mdData.length,
-            convertedData: mdData
+            dataType: 'text/plain',
+            dataLength: text.length,
+            convertedData: text
         }
     }
 }

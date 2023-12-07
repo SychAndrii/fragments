@@ -1,7 +1,7 @@
 const Converter = require('../Converter');
 const sharp = require('sharp');
 
-class PngToJpegConverter extends Converter {
+class ToJpegConverter extends Converter {
   constructor(fragment) {
     super(fragment);
   }
@@ -18,4 +18,4 @@ class PngToJpegConverter extends Converter {
   }
 }
 
-module.exports = PngToJpegConverter;
+module.exports = ToJpegConverter;

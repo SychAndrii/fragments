@@ -1,21 +1,21 @@
 const Converter = require('../Converter');
 const sharp = require('sharp');
 
-class PngToWebpConverter extends Converter {
+class ToPngConverter extends Converter {
   constructor(fragment) {
     super(fragment);
   }
 
   async convert() {
     const fragmentData = await this.fragment.getData();
-    const webp = await sharp(fragmentData).webp().toBuffer();
+    const png = await sharp(fragmentData).png().toBuffer();
 
     return {
-      dataType: 'image/webp',
-      dataLength: webp.length,
-      convertedData: webp,
+      dataType: 'image/png',
+      dataLength: png.length,
+      convertedData: png,
     };
   }
 }
 
-module.exports = PngToWebpConverter;
+module.exports = ToPngConverter;

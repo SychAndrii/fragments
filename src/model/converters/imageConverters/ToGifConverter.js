@@ -1,14 +1,14 @@
 const Converter = require('../Converter');
 const sharp = require('sharp');
 
-class PngToGifConverter extends Converter {
+class ToGifConverter extends Converter {
   constructor(fragment) {
     super(fragment);
   }
 
   async convert() {
     const fragmentData = await this.fragment.getData();
-    const gif = await sharp(fragmentData).gif().toBuffer();
+    const gif = await sharp(fragmentData, {animated: true}).gif().toBuffer();
 
     return {
       dataType: 'image/gif',
@@ -18,4 +18,4 @@ class PngToGifConverter extends Converter {
   }
 }
 
-module.exports = PngToGifConverter;
+module.exports = ToGifConverter;
