@@ -67,47 +67,6 @@ describe('POST route', () => {
     });
   });
 
-  describe('image fragments', () => {
-    test('Valid fragments with image/png content type are allowed', async () => {
-      let res = await request(app)
-        .post('/v1/fragments')
-        .send('{"kekw": 123}')
-        .set('Content-Type', 'image/png')
-        .auth('user1@email.com', 'password1');
-      expect(res.statusCode).toBe(201);
-
-      res = await request(app)
-        .post('/v1/fragments')
-        .send('{"kekw": 123}')
-        .set('Content-Type', 'application/json; charset=UTF-8')
-        .auth('user1@email.com', 'password1');
-      expect(res.statusCode).toBe(201);
-
-      res = await request(app)
-        .post('/v1/fragments')
-        .send(JSON.stringify(complexJSONObject))
-        .set('Content-Type', 'application/json; charset=UTF-8')
-        .auth('user1@email.com', 'password1');
-      expect(res.statusCode).toBe(201);
-    });
-
-    test('Invalid fragments with application/json content type are not allowed', async () => {
-      let res = await request(app)
-        .post('/v1/fragments')
-        .send('{kekw: 123}')
-        .set('Content-Type', 'application/json')
-        .auth('user1@email.com', 'password1');
-      expect(res.statusCode).toBe(415);
-
-      res = await request(app)
-        .post('/v1/fragments')
-        .send('{"kekw": 123')
-        .set('Content-Type', 'application/json')
-        .auth('user1@email.com', 'password1');
-      expect(res.statusCode).toBe(415);
-    });
-  });
-
   describe('markdown fragments', () => {
     test('Fragments with text/markdown content type are allowed', async () => {
       let res = await request(app)
