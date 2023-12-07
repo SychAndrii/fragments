@@ -1,7 +1,7 @@
-const Converter = require("./Converter");
+const Converter = require("../Converter");
 const md = require('markdown-it')();
 
-class MdToHtmlConverter extends Converter {
+class MdToTxtConverter extends Converter {
     constructor(fragment) {
         super(fragment);
     }
@@ -18,4 +18,4 @@ class MdToHtmlConverter extends Converter {
     }
 }
 
-module.exports = MdToHtmlConverter;
+module.exports = MdToTxtConverter;
