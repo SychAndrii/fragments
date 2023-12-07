@@ -1,6 +1,8 @@
 const ConversionNotAllowed = require('../../errors/ConversionNotAllowed');
 const MdToHtmlConverter = require('./mdConverters/MdToHtmlConverter');
+const PngToGifConverter = require('./pngConverters/PngToGifConverter');
 const PngToJpegConverter = require('./pngConverters/PngToJpegConverter');
+const PngToWebpConverter = require('./pngConverters/PngToWebpConverter');
 
 class ConverterFactory {
   static validConversions = {
@@ -36,6 +38,14 @@ class ConverterFactory {
 
     if (fragmentType == 'image/png' && this.extension == 'jpg') {
       return new PngToJpegConverter(this.fragment);
+    }
+
+    if (fragmentType == 'image/png' && this.extension == 'webp') {
+      return new PngToWebpConverter(this.fragment);
+    }
+
+    if (fragmentType == 'image/png' && this.extension == 'gif') {
+      return new PngToGifConverter(this.fragment);
     }
 
     throw new ConversionNotAllowed(fragmentType, this.extension);
