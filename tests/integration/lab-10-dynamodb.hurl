@@ -46,7 +46,7 @@ user1@email.com:password1
 
 HTTP/1.1 200
 [Asserts]
-header "Content-Type" == "text/markdown; charset=utf-8"
+header "Content-Type" == "application/json; charset=utf-8"
 jsonpath "$.fragment.id" == {{fragment2_id}}
 jsonpath "$.status" == "ok"
 jsonpath "$.fragment.type" == "text/markdown"
