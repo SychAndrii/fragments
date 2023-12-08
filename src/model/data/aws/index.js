@@ -166,7 +166,7 @@ async function deleteFragment(ownerId, id) {
       Key: `${ownerId}/${id}`,
     };
 
-    // Create a DELETE Object command to send to S3
+    // Create a GET Object command to send to S3
     const command = new DeleteObjectCommand(params);
 
     const dynamoParams = {
@@ -177,15 +177,8 @@ async function deleteFragment(ownerId, id) {
     await ddbDocClient.send(new DeleteCommand(dynamoParams));
   } catch (err) {
     const { Bucket, Key } = params;
-    logger.error({ err, Bucket, Key }, 'Error deleting fragment data from S3/DynamoDB');
-
-    // Check if the error is related to the fragment not being found
-    if (err.code === 'NoSuchKey' || /* other error codes or conditions signifying not found */) {
-      throw new FragmentNotFound(id, ownerId);
-    } else {
-      // For other types of errors, you might throw a different error or handle it differently
-      throw err;
-    }
+    logger.error({ err, Bucket, Key }, 'Error streaming fragment data from S3');
+    throw new FragmentNotFound(id, ownerId);
   }
 }
 

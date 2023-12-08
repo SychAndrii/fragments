@@ -157,14 +157,13 @@ describe('Fragment class', () => {
   describe('formats', () => {
     test('formats returns the expected result for mime type of a fragment', () => {
       const validConversions = {
-        'text/plain': ['txt'],
-        'text/markdown': ['md', 'html', 'txt'],
-        'text/html': ['html', 'txt'],
-        'application/json': ['json', 'txt'],
-        'image/png': ['png', 'jpg', 'webp', 'gif'],
-        'image/jpeg': ['png', 'jpg', 'webp', 'gif'],
-        'image/webp': ['png', 'jpg', 'webp', 'gif'],
-        'image/gif': ['png', 'jpg', 'webp', 'gif'],
+        'text/markdown': ['html', 'txt'],
+        'text/html': ['txt'],
+        'application/json': ['txt'],
+        'image/png': ['jpg', 'webp', 'gif'],
+        'image/jpeg': ['png', 'webp', 'gif'],
+        'image/webp': ['png', 'jpg', 'gif'],
+        'image/gif': ['png', 'jpg', 'webp'],
       };
 
       for(const mimeType in validConversions) {
