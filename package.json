@@ -1,7 +1,7 @@
 {
   "name": "fragments",
   "private": true,
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Cloud computing course labs.",
   "scripts": {
     "test": "jest -c jest.config.js --runInBand --",
