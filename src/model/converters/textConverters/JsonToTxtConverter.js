@@ -7,7 +7,7 @@ class JsonToTxtConverter extends Converter {
 
     async convert() {
         const fragmentData = await this.fragment.getData();
-        const text = JSON.stringify(JSON.parse(fragmentData.toString()), null, 2);
+        const text = JSON.stringify(JSON.parse(fragmentData.toString()), null, 5);
         
         return {
             dataType: 'text/plain',

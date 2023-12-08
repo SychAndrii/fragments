@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
       'Sending fragment metadata'
     );
 
-    return res.status(200).type(fragment.type).json(
+    return res.status(200).json(
       createSuccessResponse({
         fragment,
       })

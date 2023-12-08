@@ -15,7 +15,6 @@ const {
   listFragments,
   deleteFragment,
 } = require('./data');
-const MimeTypesDoNotMatch = require('../errors/MimeTypesDoNotMatch');
 
 class Fragment {
   static validTypes = [
@@ -144,14 +143,7 @@ class Fragment {
   }
 
   async validateBuffer(data) {
-    if (this.type.startsWith('image')) {
-      const { fileTypeFromBuffer } = await import('file-type');
-      const { mime } = await fileTypeFromBuffer(data);
-      if (this.type !== mime) {
-        throw new MimeTypesDoNotMatch(this.id, this.type, mime);
-      }
-    }
-    else if (this.type == 'application/json') {
+    if (this.type == 'application/json') {
       JSON.parse(data.toString());
     }
   }

@@ -150,7 +150,7 @@ async function listFragments(ownerId, expand = false) {
     // If we haven't expanded to include all attributes, remap this array from
     // [ {"id":"b9e7a264-630f-436d-a785-27f30233faea"}, {"id":"dad25b07-8cd6-498b-9aaf-46d358ea97fe"} ,... ] to
     // [ "b9e7a264-630f-436d-a785-27f30233faea", "dad25b07-8cd6-498b-9aaf-46d358ea97fe", ... ]
-    return !expand ? data?.Items.map((item) => item.id) : data?.Items
+    return !expand ? data?.Items.map((item) => item.id) : data?.Items;
   } catch (err) {
     logger.error({ err, params }, 'error getting all fragments for user from DynamoDB');
     throw err;
@@ -159,26 +159,33 @@ async function listFragments(ownerId, expand = false) {
 
 // Delete a fragment's metadata and data from memory db. Returns a Promise
 async function deleteFragment(ownerId, id) {
-  const params = {
-    Bucket: process.env.AWS_S3_BUCKET_NAME,
-    Key: `${ownerId}/${id}`,
-  };
-
-  // Create a GET Object command to send to S3
-  const command = new DeleteObjectCommand(params);
-
-  const dynamoParams = {
-    TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
-    Key: { ownerId, id }
-  };
-
+  let params;
   try {
+    params = {
+      Bucket: process.env.AWS_S3_BUCKET_NAME,
+      Key: `${ownerId}/${id}`,
+    };
+
+    // Create a DELETE Object command to send to S3
+    const command = new DeleteObjectCommand(params);
+
+    const dynamoParams = {
+      TableName: process.env.AWS_DYNAMODB_TABLE_NAME,
+      Key: { ownerId, id },
+    };
     await s3Client.send(command);
     await ddbDocClient.send(new DeleteCommand(dynamoParams));
   } catch (err) {
     const { Bucket, Key } = params;
-    logger.error({ err, Bucket, Key }, 'Error streaming fragment data from S3');
-    throw new FragmentNotFound(id, ownerId);
+    logger.error({ err, Bucket, Key }, 'Error deleting fragment data from S3/DynamoDB');
+
+    // Check if the error is related to the fragment not being found
+    if (err.code === 'NoSuchKey' || /* other error codes or conditions signifying not found */) {
+      throw new FragmentNotFound(id, ownerId);
+    } else {
+      // For other types of errors, you might throw a different error or handle it differently
+      throw err;
+    }
   }
 }
 

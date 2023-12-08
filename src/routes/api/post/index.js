@@ -37,11 +37,12 @@ module.exports = async (req, res) => {
         })
       );
     } else {
-      logger.warn({}, 'Unable to create a fragment!');
+      logger.warn({type}, 'Unable to create a fragment!');
       res.status(415).json(createErrorResponse(415, 'Unsupported Data Type!'));
     }
   } catch (error) {
-    logger.warn({ error: error.message }, 'Unable to create a fragment!');
+    console.log('OUTPUTTING ERROR MESSAGE');
+    console.log(error.message);
     
     if(error instanceof MimeTypesDoNotMatch) {
       res.status(400).json(createErrorResponse(400, 'Mime types do not match!'));
